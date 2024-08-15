@@ -1,149 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Image Question Bot</title>
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <style>
-      body {
-        background-color: #e3e8ee; /* Updated background color */
-        font-family: Arial, sans-serif; /* Improved font family */
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Question Bot</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #e3e8ee; /* Neutral background for professional look */
+      font-family: Arial, sans-serif; /* Enhanced readability with a modern font */
+    }
 
-      .chatbox {
-        border-radius: 10px;
-        padding: 10px;
-        background-color: #ffffff;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-      }
+    .header {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 28px;
+      color: #333;
+    }
 
-      .chatbox .user-message,
-      .chatbox .bot-response {
-        margin: 10px 0;
-        padding: 10px;
-        border-radius: 10px;
-        max-width: 80%;
-      }
+    .chatbox {
+      border-radius: 10px;
+      padding: 10px;
+      background-color: #ffffff;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      height: 500px; /* Fixed height to align with image preview */
+    }
 
-      .chatbox .user-message {
-        background-color: #007bff;
-        color: white;
-        text-align: right;
-        align-self: flex-end;
-      }
+    .chatbox .user-message,
+    .chatbox .bot-response {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 80%;
+    }
 
-      .chatbox .bot-response {
-        background-color: #f2f2f2; /* Lighter background for bot responses */
-        color: black;
-        text-align: left;
-      }
+    .chatbox .user-message {
+      background-color: #007bff;
+      color: white;
+      text-align: right;
+      align-self: flex-end;
+    }
 
-      .image-upload {
-        background-color: #ffffff;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-      }
+    .chatbox .bot-response {
+      background-color: #f2f2f2; /* Slightly lighter background for bot responses */
+      color: black;
+      text-align: left;
+    }
 
-      .container {
-        margin-top: 50px;
-      }
-    </style>
-  </head>
+    .image-upload {
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
 
-  <body>
-    <div class="container">
-      <div class="row">
-        <!-- Image Upload Section -->
-        <div class="col-md-4">
-          <div class="image-upload">
-            <h3>Upload Image</h3>
-            <form
-              id="uploadForm"
-              action="/ask"
-              method="post"
-              enctype="multipart/form-data"
-            >
-              <div class="form-group">
-                <label for="image">Choose Image:</label>
-                <input
-                  type="file"
-                  class="form-control-file"
-                  id="image"
-                  name="image"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="question">Enter Your Question:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="question"
-                  name="question"
-                  placeholder="Ask something..."
-                  required
-                />
-              </div>
-              <button type="submit" class="btn btn-primary btn-block">
-                Ask
-              </button>
-            </form>
-          </div>
+    .image-preview {
+      width: 100%; /* Responsive width */
+      height: auto;
+      max-height: 500px; /* Max height to align with chatbox */
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      margin-top: 20px; /* Adjusted margin for the overall layout */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      Welcome to the Image Question Bot - Ask Anything with an Image!
+    </div>
+    <div class="row">
+      <!-- Image Upload Section -->
+      <div class="col-md-4">
+        <div class="image-upload">
+          <h3>Upload Image</h3>
+          <form id="uploadForm" action="/ask" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+              <label for="image">Choose Image:</label>
+              <input type="file" class="form-control-file" id="image" name="image" required />
+              <!-- Preview Container -->
+              <img id="imagePreview" src="#" alt="Image Preview" class="image-preview" style="display:none;" />
+            </div>
+            <div class="form-group">
+              <label for="question">Enter Your Question:</label>
+              <input type="text" class="form-control" id="question" name="question" placeholder="Ask something..." required />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Ask</button>
+          </form>
         </div>
+      </div>
 
-        <!-- Chatbox Section -->
-        <div class="col-md-8">
-          <div class="chatbox d-flex flex-column" id="chatbox">
-            <h3>Chat with AI</h3>
-          </div>
+      <!-- Chatbox Section -->
+      <div class="col-md-8">
+        <div class="chatbox d-flex flex-column" id="chatbox">
+          <h3>Chat with AI</h3>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- jQuery and Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-      $(document).ready(function () {
-        $("#uploadForm").on("submit", function (e) {
-          e.preventDefault();
+  <!-- jQuery and Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#image").on("change", function() {
+        // When the file input changes, display the preview
+        var file = this.files[0];
+        if (file) {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            $("#imagePreview").attr("src", e.target.result).show();
+          };
+          reader.readAsDataURL(file);
+        }
+      });
 
-          var formData = new FormData(this);
-          $.ajax({
-            url: "/ask",
-            type: "POST",
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function (data) {
-              // Append user question to chatbox
-              var userMessage =
-                '<div class="user-message align-self-end">' +
-                $("#question").val() +
-                "</div>";
-              $("#chatbox").append(userMessage);
+      $("#uploadForm").on("submit", function (e) {
+        e.preventDefault();
 
-              // Append bot response to chatbox
-              var botResponse =
-                '<div class="bot-response">' + data.response + "</div>";
-              $("#chatbox").append(botResponse);
+        var formData = new FormData(this);
+        $.ajax({
+          url: "/ask",
+          type: "POST",
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function (data) {
+            // Append user question to chatbox
+            var userMessage = '<div class="user-message align-self-end">' + $("#question").val() + "</div>";
+            $("#chatbox").append(userMessage);
 
-              // Clear the input field
-              $("#question").val("");
-            },
-            error: function () {
-              alert("There was an error processing your request.");
-            },
-          });
+            // Append bot response to chatbox
+            var botResponse = '<div class="bot-response">' + data.response + "</div>";
+            $("#chatbox").append(botResponse);
+
+            // Clear the input field
+            $("#question").val("");
+          },
+          error: function () {
+            alert("There was an error processing your request.");
+          },
         });
       });
-    </script>
-  </body>
+    });
+  </script>
+</body>
 </html>
