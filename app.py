@@ -5,7 +5,12 @@ import os
 app = Flask(__name__)
 
 # Configure the Google Generative AI API
-GOOGLE_API_KEY = 'AIzaSyAUr26Ax4Phzl1jqPAeT_PDS4OLOsh_CGw'
+GOOGLE_API_KEY = ''
+
+file = open('api_key.txt', 'r')
+GOOGLE_API_KEY = file.read()
+file.close()
+
 genai.configure(api_key=GOOGLE_API_KEY)
 
 # Route for the home page
